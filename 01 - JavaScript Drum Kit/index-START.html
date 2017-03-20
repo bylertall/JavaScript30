@@ -58,6 +58,41 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+(function() {
+  const keyEls = document.querySelectorAll('.key')
+
+  keyEls.forEach(key => {
+    key.addEventListener('transitionend', removeVisualCue)
+  })
+
+  window.addEventListener('keydown', playSound)
+
+  function removeVisualCue(e) {
+    if (e.propertyName === 'transform' && this.classList.toString().indexOf('playing') >= 0) {
+      this.classList.remove('playing')
+      console.log('Remove visual cue triggered')
+    }
+  }
+
+  function playSound(e) {
+    const keycode = e.keyCode
+    const audioEl = playSound[`audio:${keycode}`] || document.querySelector(`audio[data-key="${keycode}"]`)
+    const keyEl = playSound[`key:${keycode}`] || document.querySelector(`.key[data-key="${keycode}"]`)
+
+    if (audioEl) {
+      playSound[`audio:${keycode}`] = audioEl
+      audioEl.currentTime = 0
+      audioEl.play()
+      console.log(`Did play sound`)
+
+      if (keyEl) {
+        playSound[`key:${keycode}`] = keyEl
+        keyEl.classList.add('playing')
+        console.log('Did add visual cue')
+      }
+    }
+  }
+}())
 
 </script>
 
